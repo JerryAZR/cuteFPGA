@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Synthesis</class>
+ <widget class="QWidget" name="Synthesis">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Pin map (pcf) file</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lineEdit"/>
+     </item>
+     <item row="0" column="2">
+      <widget class="QToolButton" name="toolButton">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Top level module</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="lineEdit_2"/>
+     </item>
+     <item row="1" column="2">
+      <widget class="QToolButton" name="toolButton_2">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Add file</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Remove all</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_3">
+       <property name="text">
+        <string>Synthesis</string>
+       </property>
+       <property name="icon">
+        <iconset resource="data.qrc">
+         <normaloff>:/icons/memory.svg</normaloff>:/icons/memory.svg</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="data.qrc"/>
+ </resources>
+ <connections/>
+</ui>
