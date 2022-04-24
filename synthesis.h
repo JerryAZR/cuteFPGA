@@ -26,6 +26,8 @@ private slots:
     void on_removeSelBtn_clicked();
     void on_addFileBtn_clicked();
 
+    void on_synthBtn_clicked();
+
 private:
     Ui::Synthesis *ui;
 };

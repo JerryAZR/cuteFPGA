@@ -5,6 +5,7 @@
 #include <QStyle>
 #include <QDebug>
 #include <QCheckBox>
+#include <QDir>
 
 Synthesis::Synthesis(QWidget *parent) :
     QWidget(parent),
@@ -91,5 +92,19 @@ void Synthesis::on_addFileBtn_clicked()
             ui->fileListLayout->addWidget(newEntry);
         }
     }
+}
+
+
+void Synthesis::on_synthBtn_clicked()
+{
+    int retVal;
+#ifdef Q_OS_WIN
+    QString envFile = QDir::homePath() + "/.cutefpga/oss_cad_suite/environment.bat";
+    system("set TEST=1");
+    system("echo %TEST%");
+    retVal = system(envFile.toUtf8().data());
+
+    qInfo() << "Return value is " << retVal;
+#endif
 }
 

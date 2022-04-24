@@ -16,6 +16,8 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
+        utils.cpp
+        utils.h
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
@@ -28,6 +30,7 @@ set(PROJECT_SOURCES
         programmer.h
         programmer.cpp
         programmer.ui
+
 
         data.qrc
 )
