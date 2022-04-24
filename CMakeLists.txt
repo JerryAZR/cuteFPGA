@@ -22,6 +22,12 @@ set(PROJECT_SOURCES
         synthesis.h
         synthesis.cpp
         synthesis.ui
+        fancybutton.h
+        fancybutton.cpp
+        fancybutton.ui
+        programmer.h
+        programmer.cpp
+        programmer.ui
 
         data.qrc
 )

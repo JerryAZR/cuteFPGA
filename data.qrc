@@ -2,5 +2,8 @@
     <qresource prefix="/icons"/>
     <qresource prefix="/">
         <file>icons/memory.svg</file>
+        <file>icons/cog.svg</file>
+        <file>icons/usb-port.svg</file>
+        <file>icons/file-document-remove.svg</file>
     </qresource>
 </RCC>

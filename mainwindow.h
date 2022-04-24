@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include "synthesis.h"
+#include "programmer.h"
+#include "fancybutton.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,8 +18,16 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void showSynthScreen();
+    void showProgScreen();
+
 private:
     Ui::MainWindow *ui;
     Synthesis* _synth;
+    Programmer* _prog;
+
+    FancyButton* _synthTabBtn;
+    FancyButton* _progTabBtn;
 };
 #endif // MAINWINDOW_H
