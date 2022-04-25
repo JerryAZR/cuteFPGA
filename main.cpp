@@ -5,6 +5,7 @@
 
 int main(int argc, char *argv[])
 {
+    qInstallMessageHandler(logHandler);
     QApplication a(argc, argv);
 
     setYosysEnv();

@@ -2,8 +2,7 @@
 #include <qglobal.h>
 #include <QDebug>
 #include <QDir>
-#include <QProcess>
-#include <QThread>
+#include <QTextStream>
 
 /**
  * @brief setYosysEnv
@@ -37,6 +36,12 @@ void setYosysEnv()
         return;
     }
 
+#ifdef Q_OS_WIN
+    QChar separator(';');
+#else
+    QChar separator(':');
+#endif
+
     QDir appDir = QDir();
 
     yosysRoot = appDir.absoluteFilePath("oss-cad-suite");
@@ -47,19 +52,57 @@ void setYosysEnv()
     QString libDir = appDir.absoluteFilePath("oss-cad-suite/lib");
     QString pyDir = appDir.absoluteFilePath("oss-cad-suite/py3bin");
     QString sysPath = qgetenv("PATH");
-    sysPath.append(';');
+    sysPath.append(separator);
     sysPath.append(QDir::toNativeSeparators(binDir));
-    sysPath.append(';');
+    sysPath.append(separator);
     sysPath.append(QDir::toNativeSeparators(libDir));
-    sysPath.append(';');
+    sysPath.append(separator);
     sysPath.append(QDir::toNativeSeparators(pyDir));
-    sysPath.append(';');
+    sysPath.append(separator);
     qputenv("PATH", sysPath.toUtf8());
 
     // Set python executable
+#ifdef Q_OS_WIN
     QString pyPath = appDir.absoluteFilePath("py3bin/python3.exe");
     qputenv("PYTHON_EXECUTABLE", QDir::toNativeSeparators(pyPath).toUtf8());
+#else
+    // TODO: Add Linux code
+#endif
 
     // Note that not all environments are set
     // I'll add those if necessary
+}
+
+void logHandler(QtMsgType type, const QMessageLogContext &ctx, const QString &msg) {
+#ifdef QT_DEBUG
+    QTextStream out(stdout);
+    QString form("(%1:%2) -- %3");
+    switch (type) {
+        case QtDebugMsg:
+            out << QString("DEBUG ")
+                << form.arg(ctx.file, QString::number(ctx.line), msg) << Qt::endl;
+            break;
+        case QtInfoMsg:
+            out << QString("INFO ")
+                << form.arg(ctx.file, QString::number(ctx.line), msg) << Qt::endl;
+            break;
+        case QtWarningMsg:
+            out << QString("WARNING ")
+                << form.arg(ctx.file, QString::number(ctx.line), msg) << Qt::endl;
+            break;
+        case QtCriticalMsg:
+            out << QString("CRITICAL ")
+                << form.arg(ctx.file, QString::number(ctx.line), msg) << Qt::endl;
+            break;
+        case QtFatalMsg:
+            out << QString("FATAL ")
+                << form.arg(ctx.file, QString::number(ctx.line), msg) << Qt::endl;
+            break;
+    }
+
+#else
+    Q_UNUSED(type);
+    Q_UNUSED(context);
+    Q_UNUSED(msg);
+#endif
 }

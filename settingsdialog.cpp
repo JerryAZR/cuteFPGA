@@ -73,7 +73,8 @@ void SettingsDialog::on_installBtn_clicked()
                                       this, SLOT(stopWorking())));
     _activeConnections.append(connect(_installer, SIGNAL(failed(int)),
                                       this, SLOT(stopWorking(int))));
+    _activeConnections.append(connect(this, SIGNAL(rejected()),
+                                      _installer, SLOT(terminate())));
     startWorking("Installing...");
     _installer->run();
 }
-

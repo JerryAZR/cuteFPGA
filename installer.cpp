@@ -21,7 +21,6 @@ void Installer::updateProgress()
         if (match.hasMatch()) {
             // Assume success because it's taken from a regex match
             int progress = match.captured(1).toInt();
-            qInfo() << progress;
             emit progressUpdated(progress);
         }
     }
@@ -32,18 +31,17 @@ void Installer::finishProgress(int exitCode)
 {
     if (exitCode == 0) {
         // Program ended normally
-        qInfo() << 100;
         emit installed();
     } else {
-        qInfo() << "Terminated. Return code:" << exitCode;
+        qWarning() << "Terminated. Return code:" << exitCode;
         emit failed(exitCode);
     }
 }
 
 void Installer::onFailure(QProcess::ProcessError error)
 {
-    qInfo() << "Error:";
-    qInfo() << error;
+    qCritical() << "Error:";
+    qCritical() << error;
     emit failed(error + 42); // some offset to help with troubleshooting
 }
 
