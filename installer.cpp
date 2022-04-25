@@ -44,6 +44,7 @@ void Installer::onFailure(QProcess::ProcessError error)
 {
     qInfo() << "Error:";
     qInfo() << error;
+    emit failed(error + 42); // some offset to help with troubleshooting
 }
 
 void Installer::terminate()

@@ -7,17 +7,20 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    // Create widgets
     _synth = new Synthesis(this);
     _prog = new Programmer(this);
+    _settings = new SettingsDialog(this);
     _synthTabBtn = new FancyButton(":/icons/memory.svg", "Synthesis", this);
     _progTabBtn = new FancyButton(":/icons/usb-port.svg", "Program", this);
+    _settingsBtn = new FancyButton(":/icons/cog.svg", "Settings", this);
+    // Modify widgets
     _synthTabBtn->setCheckable(true);
     _progTabBtn->setCheckable(true);
-    FancyButton* settingsBtn = new FancyButton(":/icons/cog.svg", "Settings", this);
     // Construct tool bar
     ui->mainTabBar->addWidget(_synthTabBtn);
     ui->mainTabBar->addWidget(_progTabBtn);
-    ui->mainToolBar->addWidget(settingsBtn);
+    ui->mainToolBar->addWidget(_settingsBtn);
 
     // Initialize main layout contents
     ui->mainHLayout->addWidget(_synth);
@@ -30,7 +33,8 @@ MainWindow::MainWindow(QWidget *parent)
     // bind signals and slots
     connect(_synthTabBtn, SIGNAL(clicked()), this, SLOT(showSynthScreen()));
     connect(_progTabBtn, SIGNAL(clicked()), this, SLOT(showProgScreen()));
-}
+    connect(_settingsBtn, SIGNAL(clicked()), _settings, SLOT(init()));
+;}
 
 MainWindow::~MainWindow()
 {
@@ -54,4 +58,3 @@ void MainWindow::showProgScreen()
     _synthTabBtn->setChecked(false);
     _progTabBtn->setChecked(true);
 }
-

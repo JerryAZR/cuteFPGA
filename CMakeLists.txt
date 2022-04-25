@@ -16,23 +16,13 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
-        utils.cpp
-        utils.h
-        installer.h
-        installer.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        synthesis.h
-        synthesis.cpp
-        synthesis.ui
-        fancybutton.h
-        fancybutton.cpp
-        fancybutton.ui
-        programmer.h
-        programmer.cpp
-        programmer.ui
-
+        utils.h utils.cpp
+        installer.h installer.cpp
+        mainwindow.h mainwindow.cpp mainwindow.ui
+        synthesis.h synthesis.cpp synthesis.ui
+        fancybutton.h fancybutton.cpp fancybutton.ui
+        programmer.h programmer.cpp programmer.ui
+        settingsdialog.h settingsdialog.cpp settingsdialog.ui
 
         data.qrc
 )

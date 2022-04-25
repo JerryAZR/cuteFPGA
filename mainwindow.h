@@ -5,6 +5,7 @@
 #include "synthesis.h"
 #include "programmer.h"
 #include "fancybutton.h"
+#include "settingsdialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,8 +27,10 @@ private:
     Ui::MainWindow *ui;
     Synthesis* _synth;
     Programmer* _prog;
+    SettingsDialog* _settings;
 
     FancyButton* _synthTabBtn;
     FancyButton* _progTabBtn;
+    FancyButton* _settingsBtn;
 };
 #endif // MAINWINDOW_H
