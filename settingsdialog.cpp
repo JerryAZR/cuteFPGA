@@ -1,5 +1,8 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
+#include "utils.h"
+#include <QDate>
+#include <QDebug>
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -7,7 +10,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    _installer = new Installer("oss-cad-suite-windows-x64-20220424.exe", this);
+    QDate yesterday = QDate::currentDate().addDays(-1);
+    _installer = new Installer(getTargetPath(yesterday), this);
+    _downloader = new Downloader(getTargetUrl(yesterday), this);
+    _downloader->setLocalFile(getTargetPath(yesterday));
 }
 
 SettingsDialog::~SettingsDialog()
@@ -64,8 +70,9 @@ void SettingsDialog::stopWorking(int returnCode)
     clearConnections();
 }
 
-void SettingsDialog::on_installBtn_clicked()
+void SettingsDialog::startInstall()
 {
+    // Set progress bar signal-slot connections
     clearConnections();
     _activeConnections.append(connect(_installer, SIGNAL(progressUpdated(int)),
                                       ui->progressBar, SLOT(setValue(int))));
@@ -77,4 +84,22 @@ void SettingsDialog::on_installBtn_clicked()
                                       _installer, SLOT(terminate())));
     startWorking("Installing...");
     _installer->run();
+}
+
+void SettingsDialog::startDownload()
+{
+    clearConnections();
+    _activeConnections.append(connect(_downloader, SIGNAL(progressUpdated(int)),
+                                      ui->progressBar, SLOT(setValue(int))));
+    _activeConnections.append(connect(_downloader, SIGNAL(finished()),
+                                      this, SLOT(startInstall())));
+    _activeConnections.append(connect(this, SIGNAL(rejected()),
+                                      _downloader, SLOT(terminate())));
+    startWorking("Downloading...");
+    _downloader->run();
+}
+
+void SettingsDialog::on_installBtn_clicked()
+{
+    startDownload();
 }

@@ -8,9 +8,12 @@ class Installer : public QObject
 {
     Q_OBJECT
 public:
-    explicit Installer(QString target, QObject *parent = nullptr);
+    explicit Installer(const QString& target = "", QObject *parent = nullptr);
 
     void run();
+
+    const QString &exeName() const;
+    void setExeName(const QString &newExeName);
 
 signals:
     void progressUpdated(int progress);

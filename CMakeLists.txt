@@ -11,13 +11,19 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network)
+
+get_target_property(target_type Qt6::Core TYPE)
+if (target_type STREQUAL STATIC_LIBRARY)
+    set(CMAKE_EXE_LINKER_FLAGS "-static")
+endif()
 
 set(PROJECT_SOURCES
         main.cpp
         utils.h utils.cpp
         installer.h installer.cpp
+        downloader.h downloader.cpp
         mainwindow.h mainwindow.cpp mainwindow.ui
         synthesis.h synthesis.cpp synthesis.ui
         fancybutton.h fancybutton.cpp fancybutton.ui
@@ -50,7 +56,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(cuteFPGA PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(cuteFPGA PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network)
 
 set_target_properties(cuteFPGA PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

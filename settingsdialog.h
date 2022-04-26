@@ -6,6 +6,7 @@
 #include <QMetaObject>
 #include <QList>
 #include "installer.h"
+#include "downloader.h"
 
 namespace Ui {
 class SettingsDialog;
@@ -25,6 +26,8 @@ public:
 public slots:
     void init();
     void stopWorking(int returnCode = 0);
+    void startInstall();
+    void startDownload();
 
 private slots:
     void on_installBtn_clicked();
@@ -32,6 +35,7 @@ private slots:
 private:
     Ui::SettingsDialog *ui;
     Installer* _installer;
+    Downloader* _downloader;
     QList<QMetaObject::Connection> _activeConnections;
 };
 

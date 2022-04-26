@@ -3,6 +3,10 @@
 #include <QDebug>
 #include <QDir>
 #include <QTextStream>
+#include <QStringList>
+#include <QDate>
+
+const static char* appPath(".cutefpga");
 
 /**
  * @brief setYosysEnv
@@ -41,8 +45,11 @@ void setYosysEnv()
 #else
     QChar separator(':');
 #endif
-
-    QDir appDir = QDir();
+    QDir appDir(QDir::home().absoluteFilePath(appPath));
+    // Create the app root if not exist
+    if (!appDir.exists()) {
+        QDir::home().mkdir(appPath);
+    }
 
     yosysRoot = appDir.absoluteFilePath("oss-cad-suite");
     qputenv("YOSYSHQ_ROOT", QDir::toNativeSeparators(yosysRoot).toUtf8());
@@ -102,7 +109,79 @@ void logHandler(QtMsgType type, const QMessageLogContext &ctx, const QString &ms
 
 #else
     Q_UNUSED(type);
-    Q_UNUSED(context);
+    Q_UNUSED(ctx);
     Q_UNUSED(msg);
 #endif
+}
+
+
+QString getWorkDir()
+{
+    return QDir::home().absoluteFilePath(appPath);
+}
+
+/**
+ * @brief removeWorkDir
+ *
+ * Delete the data folder created on startup
+ */
+void removeWorkDir()
+{
+    QDir appDir(QDir::home().absoluteFilePath(appPath));
+    // NOTE: Use a thread(pool) because this could take long
+    appDir.removeRecursively();
+}
+
+/**
+ * @brief getTargetName
+ * @param date
+ * @return File name of the target exe or tarball
+ */
+QString getTargetName(const QDate &date)
+{
+#if (defined Q_OS_WIN)
+    return QString("oss-cad-suite-%1-%2-%3.%4")
+            .arg("windows", "x64", date.toString("yyyyMMdd"), "exe");
+#elif (defined Q_OS_LINUX)
+#endif
+}
+
+/**
+ * @brief getTargetUrl
+ * @param date
+ * @return URL of the target exe or tarball
+ */
+QString getTargetUrl(const QDate &date)
+{
+    // YYYY-MM-DD
+    QString repo =
+            QString("https://github.com/YosysHQ/oss-cad-suite-build/releases/download/%1-%2-%3/")
+            .arg(date.year(), 4, 10, QLatin1Char('0'))
+            .arg(date.month(), 2, 10, QLatin1Char('0'))
+            .arg(date.day(), 2, 10, QLatin1Char('0'));
+
+    return repo.append(getTargetName(date));
+}
+
+/**
+ * @brief getTargetPath
+ * @param date
+ * @return Absolute path of the target exe or tarball
+ */
+QString getTargetPath(const QDate &date)
+{
+    QDir appDir(QDir::home().absoluteFilePath(appPath));
+    return appDir.absoluteFilePath(getTargetName(date));
+}
+
+/**
+ * @brief getTargetFromPath
+ * @param path
+ * @return File name of the target with the given path
+ *          (e.g. "/home/user/target.tgz" ==> "target.tgz")
+ */
+QString getTargetFromPath(const QString &path)
+{
+    QStringList separated = path.split("/");
+    return separated.last();
 }

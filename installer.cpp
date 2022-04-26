@@ -1,14 +1,21 @@
 #include "installer.h"
+#include "utils.h"
 #include <QDebug>
 #include <QRegularExpression>
+#include <QFile>
 
-Installer::Installer(QString target, QObject *parent)
+Installer::Installer(const QString& target, QObject *parent)
     : QObject{parent}
 {
 #ifdef Q_OS_WIN
     _exeName = target;
 #endif
     _instProc = new QProcess(this);
+
+    connect(_instProc, SIGNAL(readyRead()), this, SLOT(updateProgress()));
+    connect(_instProc, SIGNAL(finished(int)), this, SLOT(finishProgress(int)));
+    connect(_instProc, SIGNAL(errorOccurred(QProcess::ProcessError)),
+            this, SLOT(onFailure(QProcess::ProcessError)));
 }
 
 void Installer::updateProgress()
@@ -33,9 +40,12 @@ void Installer::finishProgress(int exitCode)
         // Program ended normally
         emit installed();
     } else {
-        qWarning() << "Terminated. Return code:" << exitCode;
+        qCritical() << "Terminated. Return code:" << exitCode;
+        qCritical() << _instProc->errorString();
         emit failed(exitCode);
     }
+    // Delete the installer exe or tarball to save disk space
+    QFile::remove(_exeName);
 }
 
 void Installer::onFailure(QProcess::ProcessError error)
@@ -50,15 +60,22 @@ void Installer::terminate()
     _instProc->kill();
 }
 
+const QString &Installer::exeName() const
+{
+    return _exeName;
+}
+
+void Installer::setExeName(const QString &newExeName)
+{
+    _exeName = newExeName;
+}
+
 
 void Installer::run()
 {
 #ifdef Q_OS_WIN
     _instProc->setProcessChannelMode(QProcess::MergedChannels);
-    connect(_instProc, SIGNAL(readyRead()), this, SLOT(updateProgress()));
-    connect(_instProc, SIGNAL(finished(int)), this, SLOT(finishProgress(int)));
-    connect(_instProc, SIGNAL(errorOccurred(QProcess::ProcessError)),
-            this, SLOT(onFailure(QProcess::ProcessError)));
+    _instProc->setWorkingDirectory(getWorkDir());
     _instProc->start(_exeName, QStringList() << "-y");
 #endif
 }
