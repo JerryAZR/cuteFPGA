@@ -7,22 +7,40 @@
 #include <QDebug>
 #include <QCheckBox>
 #include <QDir>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 
 Synthesis::Synthesis(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Synthesis)
 {
-    // Should probably use an external config file
-    static const QStringList supportedArch({
-        "ice40", "ecp5", "machxo2", "nexus"
-    });
+    ui->setupUi(this);
+
     // initialize log files
     QString workDir = getWorkDir();
-    _yosysLog = new QFile(workDir + "/yosys.log");
+    _yosysLog = new QFile(workDir + "/yosys.log", this);
 
-    ui->setupUi(this);
     // Construct support list
+    QFile configFile(":/config/support.json");
+    configFile.open(QFile::ReadOnly);
+    QJsonDocument config = QJsonDocument::fromJson(configFile.readAll());
+    configFile.close();
+    QStringList supportedArch;
+    foreach(QJsonValueRef archRef, config.array()) {
+        static const QString nameKey("display_name");
+        static const QString archKey("yosys_name");
+        static const QString typeKey("device_types");
+        supportedArch.append(archRef[nameKey].toString());
+        _architectures.append(archRef[archKey].toString());
+        QStringList tmpList;
+        foreach(QJsonValueRef typeRef, archRef[typeKey].toArray()) {
+            tmpList.append(typeRef.toString());
+        }
+        _devices.append(tmpList);
+    }
     ui->archSel->addItems(supportedArch);
+    ui->typeSel->addItems(_devices[0]);
     // Initialize runners
     _yosysRunner = new QProcess(this);
     _yosysRunner->setProcessChannelMode(QProcess::MergedChannels);
@@ -71,7 +89,8 @@ void Synthesis::runSynth()
     QStringList cmd;
     // get all files
     cmd.append("-p");
-    cmd.append(yosysCmd.arg(ui->archSel->currentText(), "fpga_top"));
+    int archIdx = ui->archSel->currentIndex();
+    cmd.append(yosysCmd.arg(_architectures[archIdx], "fpga_top"));
     foreach(QCheckBox* child, this->findChildren<QCheckBox*>()) {
         cmd.append(child->text());
     }
@@ -170,5 +189,12 @@ void Synthesis::onFailure(QProcess::ProcessError error)
 
     // close all files
     _yosysLog->close();
+}
+
+
+void Synthesis::on_archSel_currentIndexChanged(int index)
+{
+    ui->typeSel->clear();
+    ui->typeSel->addItems(_devices[index]);
 }
 

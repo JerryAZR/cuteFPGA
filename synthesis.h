@@ -35,10 +35,14 @@ private slots:
     void finishSynth(int exitCode);
     void onFailure(QProcess::ProcessError error);
 
+    void on_archSel_currentIndexChanged(int index);
+
 private:
     Ui::Synthesis *ui;
     QProcess* _yosysRunner;
     QFile* _yosysLog;
+    QStringList _architectures;
+    QList<QStringList> _devices;
 };
 
 #endif // SYNTHESIS_H
