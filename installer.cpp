@@ -11,6 +11,8 @@ Installer::Installer(const QString& target, QObject *parent)
     _exeName = target;
 #endif
     _instProc = new QProcess(this);
+    _instProc->setProcessChannelMode(QProcess::MergedChannels);
+    _instProc->setWorkingDirectory(getWorkDir());
 
     connect(_instProc, SIGNAL(readyRead()), this, SLOT(updateProgress()));
     connect(_instProc, SIGNAL(finished(int)), this, SLOT(finishProgress(int)));
@@ -74,8 +76,6 @@ void Installer::setExeName(const QString &newExeName)
 void Installer::run()
 {
 #ifdef Q_OS_WIN
-    _instProc->setProcessChannelMode(QProcess::MergedChannels);
-    _instProc->setWorkingDirectory(getWorkDir());
     _instProc->start(_exeName, QStringList() << "-y");
 #endif
 }

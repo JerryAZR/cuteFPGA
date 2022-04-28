@@ -1,5 +1,6 @@
 #include "synthesis.h"
 #include "ui_synthesis.h"
+#include "utils.h"
 #include <QFileDialog>
 #include <QApplication>
 #include <QStyle>
@@ -11,8 +12,26 @@ Synthesis::Synthesis(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Synthesis)
 {
+    // Should probably use an external config file
+    static const QStringList supportedArch({
+        "ice40", "ecp5", "machxo2", "nexus"
+    });
+    // initialize log files
+    QString workDir = getWorkDir();
+    _yosysLog = new QFile(workDir + "/yosys.log");
+
     ui->setupUi(this);
-    ui->pcfBtn->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogOpenButton));
+    // Construct support list
+    ui->archSel->addItems(supportedArch);
+    // Initialize runners
+    _yosysRunner = new QProcess(this);
+    _yosysRunner->setProcessChannelMode(QProcess::MergedChannels);
+    _yosysRunner->setWorkingDirectory(workDir);
+
+    connect(_yosysRunner, SIGNAL(readyRead()), this, SLOT(updateSynth()));
+    connect(_yosysRunner, SIGNAL(finished(int)), this, SLOT(finishSynth(int)));
+    connect(_yosysRunner, SIGNAL(errorOccurred(QProcess::ProcessError)),
+            this, SLOT(onFailure(QProcess::ProcessError)));
 }
 
 Synthesis::~Synthesis()
@@ -44,6 +63,31 @@ QList<QCheckBox*> Synthesis::getSelectedFiles()
     }
 
     return checkedList;
+}
+
+void Synthesis::runSynth()
+{
+    static QString yosysCmd("synth_%1 -top %2 -json out.json");
+    QStringList cmd;
+    // get all files
+    cmd.append("-p");
+    cmd.append(yosysCmd.arg(ui->archSel->currentText(), "fpga_top"));
+    foreach(QCheckBox* child, this->findChildren<QCheckBox*>()) {
+        cmd.append(child->text());
+    }
+    // open log file
+    _yosysLog->open(QFile::WriteOnly);
+    _yosysRunner->start("yosys", cmd);
+}
+
+void Synthesis::runPnR()
+{
+
+}
+
+void Synthesis::runPack()
+{
+
 }
 
 void Synthesis::on_pcfBtn_clicked()
@@ -97,14 +141,34 @@ void Synthesis::on_addFileBtn_clicked()
 
 void Synthesis::on_synthBtn_clicked()
 {
-    int retVal;
-#ifdef Q_OS_WIN
-    QString envFile = QDir::homePath() + "/.cutefpga/oss_cad_suite/environment.bat";
-    system("set TEST=1");
-    system("echo %TEST%");
-    retVal = system(envFile.toUtf8().data());
+    runSynth();
+}
 
-    qInfo() << "Return value is " << retVal;
-#endif
+void Synthesis::updateSynth()
+{
+    QString log = _yosysRunner->readAll();
+    _yosysLog->write(log.toUtf8());
+}
+
+void Synthesis::finishSynth(int exitCode)
+{
+    if (exitCode == 0) {
+        // Program ended normally
+        qInfo() << "Synthesis complete";
+    } else {
+        qCritical() << "Terminated. Return code:" << exitCode;
+        qCritical() << _yosysRunner->errorString();
+    }
+    _yosysLog->close();
+}
+
+void Synthesis::onFailure(QProcess::ProcessError error)
+{
+    qCritical() << "Error:";
+    qCritical() << error;
+    qCritical() << _yosysRunner->errorString();
+
+    // close all files
+    _yosysLog->close();
 }
 

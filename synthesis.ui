@@ -16,12 +16,8 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Pin map (pcf) file</string>
-       </property>
-      </widget>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="lineEdit_2"/>
      </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="pcfName"/>
@@ -33,7 +29,32 @@
        </property>
        <property name="icon">
         <iconset resource="data.qrc">
-         <normaloff>:/icons/memory.svg</normaloff>:/icons/memory.svg</iconset>
+         <normaloff>:/icons/folder-open.svg</normaloff>:/icons/folder-open.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QToolButton" name="moduleBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="data.qrc">
+         <normaloff>:/icons/view-module.svg</normaloff>:/icons/view-module.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Pin map (pcf) file</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>TextLabel</string>
        </property>
       </widget>
      </item>
@@ -44,19 +65,8 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEdit_2"/>
-     </item>
-     <item row="1" column="2">
-      <widget class="QToolButton" name="toolButton_2">
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="icon">
-        <iconset resource="data.qrc">
-         <normaloff>:/icons/memory.svg</normaloff>:/icons/memory.svg</iconset>
-       </property>
-      </widget>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="archSel"/>
      </item>
     </layout>
    </item>
@@ -67,6 +77,10 @@
        <property name="text">
         <string>Add file</string>
        </property>
+       <property name="icon">
+        <iconset resource="data.qrc">
+         <normaloff>:/icons/folder-open.svg</normaloff>:/icons/folder-open.svg</iconset>
+       </property>
       </widget>
      </item>
      <item>
@@ -74,12 +88,20 @@
        <property name="text">
         <string>Remove selected</string>
        </property>
+       <property name="icon">
+        <iconset resource="data.qrc">
+         <normaloff>:/icons/book-remove.svg</normaloff>:/icons/book-remove.svg</iconset>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_2">
        <property name="text">
         <string>Remove all</string>
+       </property>
+       <property name="icon">
+        <iconset resource="data.qrc">
+         <normaloff>:/icons/book-remove-multiple.svg</normaloff>:/icons/book-remove-multiple.svg</iconset>
        </property>
       </widget>
      </item>
@@ -90,7 +112,7 @@
        </property>
        <property name="icon">
         <iconset resource="data.qrc">
-         <normaloff>:/icons/memory.svg</normaloff>:/icons/memory.svg</iconset>
+         <normaloff>:/icons/play.svg</normaloff>:/icons/play.svg</iconset>
        </property>
       </widget>
      </item>
@@ -110,7 +132,7 @@
         <x>0</x>
         <y>0</y>
         <width>703</width>
-        <height>219</height>
+        <height>186</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">

@@ -3,7 +3,9 @@
 
 #include <QWidget>
 #include <QCheckBox>
+#include <QProcess>
 #include <QList>
+#include <QFile>
 
 namespace Ui {
 class Synthesis;
@@ -19,17 +21,24 @@ public:
 
     bool containsFile(const QString& fname);
     QList<QCheckBox*> getSelectedFiles();
-
+    void runSynth();
+    void runPnR();
+    void runPack();
 
 private slots:
     void on_pcfBtn_clicked();
     void on_removeSelBtn_clicked();
     void on_addFileBtn_clicked();
-
     void on_synthBtn_clicked();
+
+    void updateSynth();
+    void finishSynth(int exitCode);
+    void onFailure(QProcess::ProcessError error);
 
 private:
     Ui::Synthesis *ui;
+    QProcess* _yosysRunner;
+    QFile* _yosysLog;
 };
 
 #endif // SYNTHESIS_H

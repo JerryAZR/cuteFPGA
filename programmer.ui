@@ -38,6 +38,10 @@
        <property name="text">
         <string>Program</string>
        </property>
+       <property name="icon">
+        <iconset resource="data.qrc">
+         <normaloff>:/icons/play.svg</normaloff>:/icons/play.svg</iconset>
+       </property>
       </widget>
      </item>
     </layout>
@@ -57,6 +61,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="data.qrc"/>
+ </resources>
  <connections/>
 </ui>
