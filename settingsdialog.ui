@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
-    <height>198</height>
+    <width>282</width>
+    <height>234</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,7 +25,14 @@
      <item>
       <widget class="QPushButton" name="installBtn">
        <property name="text">
-        <string>Install CAD Suite from YosysHQ</string>
+        <string>Install CAD suite from YosysHQ</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="openRootBtn">
+       <property name="text">
+        <string>Open application root in File Explorer</string>
        </property>
       </widget>
      </item>

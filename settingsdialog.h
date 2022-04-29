@@ -32,6 +32,8 @@ public slots:
 private slots:
     void on_installBtn_clicked();
 
+    void on_openRootBtn_clicked();
+
 private:
     Ui::SettingsDialog *ui;
     Installer* _installer;

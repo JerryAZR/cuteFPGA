@@ -11,9 +11,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->setupUi(this);
 
     QDate yesterday = QDate::currentDate().addDays(-1);
-    _installer = new Installer(getTargetPath(yesterday), this);
+    _installer = new Installer(getTargetPath(), this);
     _downloader = new Downloader(getTargetUrl(yesterday), this);
-    _downloader->setLocalFile(getTargetPath(yesterday));
+    _downloader->setLocalFile(getTargetPath());
 }
 
 SettingsDialog::~SettingsDialog()
@@ -103,3 +103,9 @@ void SettingsDialog::on_installBtn_clicked()
 {
     startDownload();
 }
+
+void SettingsDialog::on_openRootBtn_clicked()
+{
+    nativeOpen(getWorkDir());
+}
+

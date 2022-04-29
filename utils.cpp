@@ -147,6 +147,15 @@ QString getTargetName(const QDate &date)
 #endif
 }
 
+QString getTargetName()
+{
+#if (defined Q_OS_WIN)
+    return QString("oss-cad-suite-%1-%2.%3")
+            .arg("windows", "x64", "exe");
+#elif (defined Q_OS_LINUX)
+#endif
+}
+
 /**
  * @brief getTargetUrl
  * @param date
@@ -169,10 +178,10 @@ QString getTargetUrl(const QDate &date)
  * @param date
  * @return Absolute path of the target exe or tarball
  */
-QString getTargetPath(const QDate &date)
+QString getTargetPath()
 {
     QDir appDir(QDir::home().absoluteFilePath(appPath));
-    return appDir.absoluteFilePath(getTargetName(date));
+    return appDir.absoluteFilePath(getTargetName());
 }
 
 /**
