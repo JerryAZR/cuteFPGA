@@ -17,7 +17,7 @@ jobs:
           dir: '${{ github.workspace }}/Qt/'
           install-deps: 'true'
           cached: 'false'
-          setup-python: 'false'
+          setup-python: 'true'
           set-env: 'true'
           tools-only: 'false'
 
