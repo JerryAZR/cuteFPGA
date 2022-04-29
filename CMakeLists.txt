@@ -29,6 +29,9 @@ set(PROJECT_SOURCES
         fancybutton.h fancybutton.cpp fancybutton.ui
         programmer.h programmer.cpp programmer.ui
         settingsdialog.h settingsdialog.cpp settingsdialog.ui
+        spinnertask.h spinnertask.cpp spinnertask.ui
+        spinnerdialog.h spinnerdialog.cpp spinnerdialog.ui
+        warndialog.h warndialog.cpp warndialog.ui
 
         data.qrc
 )

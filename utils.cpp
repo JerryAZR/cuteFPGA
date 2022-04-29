@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QStringList>
 #include <QDate>
+#include <QProcess>
 
 const static char* appPath(".cutefpga");
 
@@ -184,4 +185,26 @@ QString getTargetFromPath(const QString &path)
 {
     QStringList separated = path.split("/");
     return separated.last();
+}
+
+/**
+ * @brief nativeOpen
+ *
+ * Open target file with OS default application
+ *
+ * @param target
+ */
+void nativeOpen(const QString &target)
+{
+    QProcess* process = new QProcess();
+    QProcess::connect(process, SIGNAL(finished(int)), process, SLOT(deleteLater()));
+#if (defined Q_OS_WIN)
+    QStringList options;
+    options << "/c" << "start" << QDir::toNativeSeparators(target);
+    process->start("cmd", options);
+#elif (defined Q_OS_DARWIN)
+    process->start("open", QStringList() << QDir::toNativeSeparators(target));
+#elif (defined Q_OS_LINUX)
+    process->start("xdg-open", QStringList() << QDir::toNativeSeparators(target));
+#endif
 }

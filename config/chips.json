@@ -1,0 +1,16 @@
+[
+    {
+        "display_name": "Lattice iCE40",
+        "yosys_name": "ice40",
+        "nextpnr_name": "ice40",
+        "device_types": [
+            "lp384", "lp1k", "lp4k", "lp8k",
+            "hk1k", "hx4k", "hx8k",
+            "up3k", "up5k",
+            "u1k", "u2k", "u4k"
+        ],
+        "packer": "icepack",
+        "packer_format": "asc",
+        "packer_option": ""
+    }
+]

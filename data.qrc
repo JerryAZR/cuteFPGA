@@ -10,6 +10,10 @@
         <file>icons/play.svg</file>
         <file>icons/book-remove.svg</file>
         <file>icons/book-remove-multiple.svg</file>
-        <file>config/support.json</file>
+        <file>config/chips.json</file>
+        <file>icons/check.svg</file>
+        <file>icons/clock.svg</file>
+        <file>icons/alert.svg</file>
+        <file>config/programmers.json</file>
     </qresource>
 </RCC>

@@ -11,5 +11,6 @@ QString getTargetUrl(const QDate& yesterday);
 QString getTargetPath(const QDate& yesterday);
 QString getTargetFromPath(const QString& path);
 QString getWorkDir();
+void nativeOpen(const QString& target);
 
 #endif // UTILS_H
