@@ -13,13 +13,6 @@ jobs:
           version: '6.3.0'
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_mingw81'
-          dir: '${{ github.workspace }}/Qt/'
-          install-deps: 'true'
-          cached: 'false'
-          setup-python: 'true'
-          set-env: 'true'
-          tools-only: 'false'
 
       - name: Configure Project
         run: qt-cmake -S ./src -B ./build
