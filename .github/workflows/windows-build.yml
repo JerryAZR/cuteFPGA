@@ -1,0 +1,22 @@
+name: Windows Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: '6.3.0'
+          host: 'windows'
+          target: 'desktop'
+
+      - name: Configure Project
+        run: qt-cmake -S ./src -B ./build
+
+      - name: Build Project
+        working-directory: ./build
+        run: cmake --build .
