@@ -55,18 +55,18 @@ void setYosysEnv()
     yosysRoot = appDir.absoluteFilePath("oss-cad-suite");
     qputenv("YOSYSHQ_ROOT", QDir::toNativeSeparators(yosysRoot).toUtf8());
 
-    // Update PATH
+    // Update PATH (prepend)
     QString binDir = appDir.absoluteFilePath("oss-cad-suite/bin");
     QString libDir = appDir.absoluteFilePath("oss-cad-suite/lib");
     QString pyDir = appDir.absoluteFilePath("oss-cad-suite/py3bin");
-    QString sysPath = qgetenv("PATH");
-    sysPath.append(separator);
+    QString sysPath;
     sysPath.append(QDir::toNativeSeparators(binDir));
     sysPath.append(separator);
     sysPath.append(QDir::toNativeSeparators(libDir));
     sysPath.append(separator);
     sysPath.append(QDir::toNativeSeparators(pyDir));
     sysPath.append(separator);
+    sysPath.append(qgetenv("PATH"));
     qputenv("PATH", sysPath.toUtf8());
 
     // Set python executable

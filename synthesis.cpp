@@ -140,7 +140,7 @@ void Synthesis::runSynth()
     warnBox.setWindowIcon(QIcon(":/icons/alert.svg"));
     if (emptyFileList || topLevel.isEmpty()) {
         warnBox.setWindowTitle("Error");
-        warnBox.addLine("Please fix the following error(s)");
+        warnBox.addLine("Please fix the following error(s):");
         if (emptyFileList) {
             warnBox.addLine("No source file added.");
         }
@@ -168,12 +168,11 @@ void Synthesis::runSynth()
     _yosysLog->open(QFile::WriteOnly);
 
     // start process
+    _spinner->reset();
+    _spinner->show();
     qInfo() << "Running yosys with the following options:";
     qInfo() << options;
     _yosysRunner->start("yosys", options);
-
-    _spinner->reset();
-    _spinner->show();
 }
 
 void Synthesis::runPnR()

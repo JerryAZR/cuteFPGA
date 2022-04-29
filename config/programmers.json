@@ -1,6 +1,14 @@
 [
     {
         "name": "webFPGA",
+        "use_python": true,
+        "programmer": ":/scripts/webfpga.py",
+        "options": []
+    },
+    {
+        "name": "IceStorm (iceprog)",
+        "use_python": false,
+        "programmer": "iceprog",
         "options": []
     }
 ]

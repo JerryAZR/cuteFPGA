@@ -15,5 +15,6 @@
         <file>icons/clock.svg</file>
         <file>icons/alert.svg</file>
         <file>config/programmers.json</file>
+        <file>scripts/webfpga.py</file>
     </qresource>
 </RCC>
