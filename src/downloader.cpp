@@ -149,7 +149,9 @@ void Downloader::terminate()
 
 void Downloader::onFailure()
 {
+#ifndef Q_OS_WIN
     qCritical() << "Download failed";
     qCritical() << _process->errorString();
+#endif
 }
 
