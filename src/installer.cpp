@@ -9,6 +9,9 @@ Installer::Installer(const QString& target, QObject *parent)
 {
 #ifdef Q_OS_WIN
     _exeName = target;
+#else
+    _exeName = "tar";
+    _archive = target;
 #endif
     _instProc = new QProcess(this);
     _instProc->setProcessChannelMode(QProcess::MergedChannels);
@@ -23,7 +26,7 @@ Installer::Installer(const QString& target, QObject *parent)
 void Installer::updateProgress()
 {
 #ifdef Q_OS_WIN
-    static QRegularExpression re("(\\d+)%");
+    const static QRegularExpression re("(\\d+)%");
     QString tmp = _instProc->readAll();
     if (tmp.length() > 0) {
         QRegularExpressionMatch match = re.match(tmp);
@@ -31,6 +34,19 @@ void Installer::updateProgress()
             // Assume success because it's taken from a regex match
             int progress = match.captured(1).toInt();
             emit progressUpdated(progress);
+        }
+    }
+#else
+    const static QRegularExpression re("(\\d+)");
+    QString tmp = _instProc->readAll();
+    if (tmp.length() > 0) {
+        QRegularExpressionMatch match = re.match(tmp);
+        if (match.hasMatch()) {
+            // Assume success because it's taken from a regex match
+            int progress = match.captured(1).toInt();
+            int estimate = (progress / 1600);
+            estimate = estimate > 100 ? 100 : estimate;
+            emit progressUpdated(estimate);
         }
     }
 #endif
@@ -46,8 +62,12 @@ void Installer::finishProgress(int exitCode)
         qCritical() << _instProc->errorString();
         emit failed(exitCode);
     }
-    // Delete the installer exe or tarball to save disk space
+    // Delete the installer exe or archive to save disk space
+#ifdef Q_OS_WIN
     QFile::remove(_exeName);
+#else
+    QFile::remove(_archive);
+#endif
 }
 
 void Installer::onFailure(QProcess::ProcessError error)
@@ -77,5 +97,9 @@ void Installer::run()
 {
 #ifdef Q_OS_WIN
     _instProc->start(_exeName, QStringList() << "-y");
+#else
+    QStringList options;
+    options << "-zxf" << _archive << "--checkpoint=1600";
+    _instProc->start(_exeName, options);
 #endif
 }

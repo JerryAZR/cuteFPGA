@@ -28,6 +28,7 @@ public slots:
 
 private:
     QString _exeName;
+    QString _archive;
     QProcess* _instProc;
 
 };
