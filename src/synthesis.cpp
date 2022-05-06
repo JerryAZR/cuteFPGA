@@ -219,6 +219,8 @@ void Synthesis::runPack()
     if (!packerOp.isEmpty()) {
         options << packerOp;
     }
+    // TODO: support custom save location
+    _outBin = getWorkDir() + "/out.bin";
     options << inFile << "out.bin";
 
     // Open log file
@@ -355,6 +357,22 @@ void Synthesis::finishPack(int exitCode)
         // Program ended normally
         qInfo() << "Packing complete";
         _spinner->next();
+
+        // Ask if user wants to flash the bitstream
+        WarnDialog ask;
+        ask.setWindowIcon(QIcon(":/icons/check.svg"));
+        ask.setWindowTitle("Synthesis complete.");
+        ask.addLine("Bitstream save location:");
+        ask.addLine(_outBin);
+        ask.addLine("");
+        ask.addLine("Would you like to program your FPGA now?");
+        if (ask.exec() == QDialog::Accepted) {
+            _spinner->accept();
+            emit configProgrammer(_outBin);
+        } else {
+            // spinner accept/reject makes no difference here
+            _spinner->accept();
+        }
     } else {
         qCritical() << "Terminated. Return code:" << exitCode;
         qCritical() << _packRunner->errorString();

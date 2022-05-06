@@ -34,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_synthTabBtn, SIGNAL(clicked()), this, SLOT(showSynthScreen()));
     connect(_progTabBtn, SIGNAL(clicked()), this, SLOT(showProgScreen()));
     connect(_settingsBtn, SIGNAL(clicked()), _settings, SLOT(init()));
+    connect(_synth, SIGNAL(configProgrammer(QString)), _prog, SLOT(setBinPath(QString)));
+    connect(_synth, SIGNAL(configProgrammer(QString)), this, SLOT(showProgScreen()));
 ;}
 
 MainWindow::~MainWindow()

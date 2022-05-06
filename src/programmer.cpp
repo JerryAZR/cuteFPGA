@@ -101,6 +101,11 @@ void Programmer::runProg()
     _progRunner->start(command, options);
 }
 
+void Programmer::setBinPath(QString binPath)
+{
+    ui->binLine->setText(QDir::toNativeSeparators(binPath));
+}
+
 void Programmer::updateProg()
 {
     QString log = _progRunner->readAll();

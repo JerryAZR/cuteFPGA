@@ -20,6 +20,9 @@ public:
     explicit Synthesis(QWidget *parent = nullptr);
     ~Synthesis();
 
+signals:
+    void configProgrammer(QString binPath);
+
 private:
     bool containsFile(const QString& fname);
     QList<QCheckBox*> getSelectedFiles();
@@ -53,6 +56,7 @@ private:
     QFile* _yosysLog;
     QFile* _pnrLog;
     QFile* _packLog;
+    QString _outBin;
     QStringList _yosysArchs;
     QStringList _pnrArchs;
     QStringList _packers;
