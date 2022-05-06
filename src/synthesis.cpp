@@ -167,11 +167,8 @@ void Synthesis::runSynth()
     // Support custom save location
     QFileDialog fileDialog(this);
     fileDialog.setFileMode(QFileDialog::AnyFile);
-    fileDialog.selectFile("bitstream.bin");
-    if (fileDialog.exec() == QFileDialog::Accepted) {
-        QStringList binNames = fileDialog.selectedFiles();
-        _outBin = binNames[0];
-    } else {
+    _outBin = fileDialog.getSaveFileName(NULL, "Save bitstream file", "bitstream.bin");
+    if (_outBin.length() == 0) {
         return;
     }
 
