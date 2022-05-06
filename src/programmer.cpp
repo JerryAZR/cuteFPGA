@@ -9,6 +9,8 @@
 #include <QJsonObject>
 #include <QFileDialog>
 
+void addUdevRule();
+
 Programmer::Programmer(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Programmer)
@@ -65,6 +67,8 @@ void Programmer::runProg()
     QString bitstream = ui->binLine->text();
     QString command;
     QStringList options;
+
+    addUdevRule();
 
     if (bitstream.isEmpty()) {
         // Might be better to show a warning here
@@ -167,5 +171,23 @@ void Programmer::on_binBtn_clicked()
     if (pcfNames.length() > 0) {
         ui->binLine->setText(pcfNames[0]);
     }
+}
+
+void addUdevRule() {
+#ifdef Q_OS_LINUX
+    QFile rule("/etc/udev/rules.d/60-webfpga.rules");
+    if (rule.exists()) {
+        return;
+    }
+    if (system("echo 'SUBSYSTEM==\"usb\", ATTR{idVendor}==\"16d0\", \
+ATTR{idProduct}==\"0e6c\", TAG+=\"uaccess\"' \
+| pkexec tee /etc/udev/rules.d/60-webfpga.rules > /dev/null")) {
+        qCritical() << "Failed to create udev rule";
+    } else {
+        if (system("udevadm control --reload-rules && udevadm trigger")) {
+            qCritical() << "Failed to reload udev rules";
+        }
+    }
+#endif
 }
 
