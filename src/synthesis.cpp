@@ -164,6 +164,17 @@ void Synthesis::runSynth()
         }
     }
 
+    // Support custom save location
+    QFileDialog fileDialog(this);
+    fileDialog.setFileMode(QFileDialog::AnyFile);
+    fileDialog.selectFile("bitstream.bin");
+    if (fileDialog.exec() == QFileDialog::Accepted) {
+        QStringList binNames = fileDialog.selectedFiles();
+        _outBin = binNames[0];
+    } else {
+        return;
+    }
+
     // open log file
     _yosysLog->open(QFile::WriteOnly);
 
@@ -219,9 +230,8 @@ void Synthesis::runPack()
     if (!packerOp.isEmpty()) {
         options << packerOp;
     }
-    // TODO: support custom save location
-    _outBin = getWorkDir() + "/out.bin";
-    options << inFile << "out.bin";
+
+    options << inFile << _outBin;
 
     // Open log file
     _packLog->open(QFile::WriteOnly);
