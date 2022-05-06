@@ -2,6 +2,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Windows Build](https://github.com/JerryAZR/cuteFPGA/actions/workflows/windows-build.yml/badge.svg)](https://github.com/JerryAZR/cuteFPGA/actions/workflows/windows-build.yml)
+[![Linux Build](https://github.com/JerryAZR/cuteFPGA/actions/workflows/linux-build.yml/badge.svg)](https://github.com/JerryAZR/cuteFPGA/actions/workflows/linux-build.yml)
 
 A non-official GUI wrapper of the [YosysHQ/oss-cad-suite](https://github.com/YosysHQ/oss-cad-suite-build),
 built with Qt6 framework (hence the name **cute**FPGA)
