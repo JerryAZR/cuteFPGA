@@ -2,16 +2,30 @@
 #include "utils.h"
 #include <QStandardPaths>
 #include <QDir>
+#ifdef Q_OS_WIN
 #include <QUrl>
+#else
+#include <QRegularExpression>
+#endif
 
 Downloader::Downloader(const QString& url, QObject *parent)
     : QObject{parent}
 {
     busy = false;
     _url = url;
+#ifdef Q_OS_WIN
     _manager = new QNetworkAccessManager(this);
+#else
+    _process = new QProcess(this);
+    _process->setProcessChannelMode(QProcess::MergedChannels);
+    _process->setWorkingDirectory(getWorkDir());
+    connect(_process, SIGNAL(readyRead()), this, SLOT(addData()));
+    connect(_process, SIGNAL(finished(int)), this, SLOT(finish()));
+    connect(_process, SIGNAL(errorOccurred()), this, SLOT(onFailure()));
+#endif
     QDir defaultDownload(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation));
     _localFile = defaultDownload.absoluteFilePath(getTargetFromPath(url));
+
 }
 
 /*-----------------------------------------------*/
@@ -49,8 +63,9 @@ void Downloader::run()
         return;
     }
     busy = true;
+    qInfo() << "Start download" << _url;
+#ifdef Q_OS_WIN
     QUrl url(_url);
-    qInfo() << "Start download" << url;
     QNetworkRequest request(url);
     // Not sure who's managing this pointer.
     // Since the IDE generates no warnings I'll assume this is good.
@@ -62,10 +77,17 @@ void Downloader::run()
     // Open temporary file
     _tmpFile = new QFile(_localFile + ".tmp");
     _tmpFile->open(QFile::WriteOnly);
+#else
+    QStringList options;
+    options << _url << "-O" << _localFile;
+    qInfo() << "Running wget with options:" << options;
+    _process->start("wget", options);
+#endif
 }
 
 void Downloader::finish()
 {
+#ifdef Q_OS_WIN
     if (_reply->isOpen()) { // Normal exit
         _tmpFile->write(_reply->readAll());
         _tmpFile->close();
@@ -82,12 +104,29 @@ void Downloader::finish()
     } else {
         qWarning() << "Nothing to stop";
     }
+#else
+    qInfo() << "file saved to" << _localFile;
+    emit finished();
+#endif
     busy = false;
 }
 
 void Downloader::addData()
 {
+#ifdef Q_OS_WIN
     _tmpFile->write(_reply->readAll());
+#else
+    const static QRegularExpression re("(\\d+)%");
+    QString tmp = _process->readAll();
+    if (tmp.length() > 0) {
+        QRegularExpressionMatch match = re.match(tmp);
+        if (match.hasMatch()) {
+            // Assume success because it's taken from a regex match
+            int progress = match.captured(1).toInt();
+            emit progressUpdated(progress);
+        }
+    }
+#endif
 }
 
 void Downloader::updateProgress(qint64 received, qint64 total)
@@ -98,10 +137,21 @@ void Downloader::updateProgress(qint64 received, qint64 total)
 void Downloader::terminate()
 {
     qWarning() << "Download aborted";
-
+#ifdef Q_OS_WIN
     _reply->abort();
     _tmpFile->close();
     _tmpFile->remove();
+#else
+    _process->kill();
+#endif
     busy = false;
+}
+
+void Downloader::onFailure()
+{
+#ifndef Q_OS_WIN
+    qCritical() << "Download failed";
+    qCritical() << _process->errorString();
+#endif
 }
 

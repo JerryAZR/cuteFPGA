@@ -20,6 +20,9 @@ public:
 
     void runProg();
 
+public slots:
+    void setBinPath(QString binPath);
+
 private slots:
     void updateProg();
     void finishProg(int returnCode);

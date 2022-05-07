@@ -75,6 +75,7 @@ void setYosysEnv()
     qputenv("PYTHON_EXECUTABLE", QDir::toNativeSeparators(pyPath).toUtf8());
 #else
     // TODO: Add Linux code
+    qInfo() << "Modified path:" << sysPath;
 #endif
 
     // Note that not all environments are set
@@ -144,6 +145,8 @@ QString getTargetName(const QDate &date)
     return QString("oss-cad-suite-%1-%2-%3.%4")
             .arg("windows", "x64", date.toString("yyyyMMdd"), "exe");
 #elif (defined Q_OS_LINUX)
+    return QString("oss-cad-suite-%1-%2-%3.%4")
+            .arg("linux", "x64", date.toString("yyyyMMdd"), "tgz");
 #endif
 }
 
@@ -153,6 +156,8 @@ QString getTargetName()
     return QString("oss-cad-suite-%1-%2.%3")
             .arg("windows", "x64", "exe");
 #elif (defined Q_OS_LINUX)
+    return QString("oss-cad-suite-%1-%2.%3")
+            .arg("linux", "x64", "tgz");
 #endif
 }
 
